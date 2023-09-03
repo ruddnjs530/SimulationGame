@@ -17,4 +17,17 @@ public class EnemyData : ScriptableObject
     [SerializeField]
     private float enemySpeed;
     public float getEnemySpeed { get { return enemySpeed; } }
+
+    private Vector3 enemyPosition;
+    public Vector3 getEnemyPosition { get { return enemyPosition; } }
+    public void setEnemyPosition(Vector3 position)
+    {
+        enemyPosition = position;
+    }
+    public float enemyAndBuildingDistance;
+    //public float getnEmyAndBuildingDistance { get { return enemyAndBuildingDistance; } }
+    public void setEmyAndBuildingDistance(float distance)
+    {
+        enemyAndBuildingDistance = distance;
+    }
 }

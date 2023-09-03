@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [System.Serializable]
 public class Wave
@@ -25,9 +26,12 @@ public class WaveSpawner : MonoBehaviour
     private float nextSpawnTime;
 
     //[SerializeField]
-    //private List<EnemyData> enemyDatas;
+    private List<EnemyData> enemyDatas = new List<EnemyData>(new EnemyData[3]);
     //[SerializeField]
     //private GameObject enemy;
+
+    private int enemyCounts = 0;
+    private List<EnemyData> sortList;
 
 
     // Update is called once per frame
@@ -36,10 +40,16 @@ public class WaveSpawner : MonoBehaviour
         currentWave = waves[currentWaveNumber];
         SpawnWave();
         GameObject[] totalEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-        if (totalEnemies.Length == 0 && !canSpawn && currentWaveNumber+1 != waves.Length) // 마지막은 모든 웨이브가 끝나면 다시 시작되지 않게 하기 위함
-        { 
+        if (totalEnemies.Length == 0 && !canSpawn && currentWaveNumber + 1 != waves.Length) // 마지막은 모든 웨이브가 끝나면 다시 시작되지 않게 하기 위함
+        {
             currentWaveNumber++;
-            canSpawn = true;       
+            canSpawn = true;
+        }
+        SortEnemyData();
+        if (!canSpawn)
+        {
+            Debug.Log(sortList[0]);
+            return;
         }
     }
 
@@ -49,7 +59,14 @@ public class WaveSpawner : MonoBehaviour
         {
             GameObject randomEnemy = currentWave.typeOfEnemies[Random.Range(0, currentWave.typeOfEnemies.Length)];
             Transform randomPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-            Instantiate(randomEnemy, randomPoint.position, Quaternion.identity);
+            //enemyDatas[enemyCounts] = Instantiate(randomEnemy, randomPoint.position, Quaternion.identity).GetComponent<Enemy>();
+            var newEnemy = Instantiate(randomEnemy, randomPoint.position, Quaternion.identity).GetComponent<Enemy>();
+
+            enemyDatas[enemyCounts] = newEnemy.enemyData;
+            Debug.Log("정렬 전 " + enemyDatas[0]);
+
+            if (enemyCounts < 3) enemyCounts++;
+
             currentWave.numberOfEnemies--;
             nextSpawnTime = Time.time + currentWave.spawnInterval; // 간격을 두고 생성
 
@@ -57,6 +74,14 @@ public class WaveSpawner : MonoBehaviour
             {
                 canSpawn = false;
             }
-        } 
+        }
+    }
+
+    void SortEnemyData()
+    {
+        if (!canSpawn)
+        {
+            sortList = enemyDatas.OrderBy(x => x.enemyAndBuildingDistance).ToList();
+        }
     }
 }
