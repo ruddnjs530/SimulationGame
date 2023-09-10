@@ -48,7 +48,7 @@ public class WaveSpawner : MonoBehaviour
         SortEnemyData();
         if (!canSpawn)
         {
-            Debug.Log(sortList[0]);
+            //Debug.Log(sortList[0]);
             return;
         }
     }
@@ -62,9 +62,12 @@ public class WaveSpawner : MonoBehaviour
             //enemyDatas[enemyCounts] = Instantiate(randomEnemy, randomPoint.position, Quaternion.identity).GetComponent<Enemy>();
             var newEnemy = Instantiate(randomEnemy, randomPoint.position, Quaternion.identity).GetComponent<Enemy>();
 
+            newEnemy.enemyData.setEnemyID(enemyCounts); // 생성된 적의 id를 추가
             enemyDatas[enemyCounts] = newEnemy.enemyData;
-            Debug.Log("정렬 전 " + enemyDatas[0]);
+            //Debug.Log("정렬 전 " + enemyDatas[0]);
 
+            Debug.Log("enemy ID " + newEnemy.enemyData.getEnemyID);
+                      
             if (enemyCounts < 3) enemyCounts++;
 
             currentWave.numberOfEnemies--;
@@ -72,7 +75,12 @@ public class WaveSpawner : MonoBehaviour
 
             if (currentWave.numberOfEnemies == 0)
             {
-                canSpawn = false;
+                for (int i = 0; i < 3; i++)
+                {
+                    Debug.Log(enemyDatas[i]);
+                    Debug.Log(enemyDatas[i].getEnemyID);
+                }
+                    canSpawn = false;
             }
         }
     }
