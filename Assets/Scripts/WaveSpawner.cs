@@ -26,12 +26,12 @@ public class WaveSpawner : MonoBehaviour
     private float nextSpawnTime;
 
     //[SerializeField]
-    private List<EnemyData> enemyDatas = new List<EnemyData>(new EnemyData[3]);
+    private List<Enemy> enemyDatas = new List<Enemy>(new Enemy[3]);
     //[SerializeField]
     //private GameObject enemy;
 
     private int enemyCounts = 0;
-    private List<EnemyData> sortList;
+    private List<Enemy> sortList;
 
 
     // Update is called once per frame
@@ -45,7 +45,7 @@ public class WaveSpawner : MonoBehaviour
             currentWaveNumber++;
             canSpawn = true;
         }
-        SortEnemyData();
+        //SortEnemyData();
         if (!canSpawn)
         {
             //Debug.Log(sortList[0]);
@@ -59,14 +59,12 @@ public class WaveSpawner : MonoBehaviour
         {
             GameObject randomEnemy = currentWave.typeOfEnemies[Random.Range(0, currentWave.typeOfEnemies.Length)];
             Transform randomPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-            //enemyDatas[enemyCounts] = Instantiate(randomEnemy, randomPoint.position, Quaternion.identity).GetComponent<Enemy>();
             var newEnemy = Instantiate(randomEnemy, randomPoint.position, Quaternion.identity).GetComponent<Enemy>();
 
-            newEnemy.enemyData.setEnemyID(enemyCounts); // 생성된 적의 id를 추가
-            enemyDatas[enemyCounts] = newEnemy.enemyData;
-            //Debug.Log("정렬 전 " + enemyDatas[0]);
+            newEnemy.setEnemyID(enemyCounts); // 생성된 적의 id를 추가
+            enemyDatas[enemyCounts] = newEnemy;
 
-            Debug.Log("enemy ID " + newEnemy.enemyData.getEnemyID);
+            Debug.Log("enemy ID " + newEnemy.getEnemyID());
                       
             if (enemyCounts < 3) enemyCounts++;
 
@@ -78,18 +76,18 @@ public class WaveSpawner : MonoBehaviour
                 for (int i = 0; i < 3; i++)
                 {
                     Debug.Log(enemyDatas[i]);
-                    Debug.Log(enemyDatas[i].getEnemyID);
+                    Debug.Log(enemyDatas[i].getEnemyID());
                 }
                     canSpawn = false;
             }
         }
     }
 
-    void SortEnemyData()
-    {
-        if (!canSpawn)
-        {
-            sortList = enemyDatas.OrderBy(x => x.enemyAndBuildingDistance).ToList();
-        }
-    }
+    //void SortEnemyData()
+    //{
+    //    if (!canSpawn)
+    //    {
+    //        sortList = enemyDatas.OrderBy(x => x.enemyAndBuildingDistance).ToList();
+    //    }
+    //}
 }
