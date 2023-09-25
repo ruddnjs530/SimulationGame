@@ -7,16 +7,14 @@ public class Enemy : MonoBehaviour
     //public EnemyData enemyData;
     private GameObject target;
 
-    private float dist;
-
     [SerializeField]
-    private string enemyName;
-    private int enemyHP;
-    private int enemyDamage;
-    private float enemySpeed = 5;
-    private Vector3 enemyPos;
-    [SerializeField]
-    private int enemyID;
+    public string enemyName;
+    public int enemyHP;
+    public int enemyDamage;
+    public float enemySpeed = 5;
+    public Vector3 enemyPos;
+   // [SerializeField]
+    public int enemyID;
 
     private void Start()
     {
@@ -53,4 +51,10 @@ public class Enemy : MonoBehaviour
     }
 
     public int getEnemyID() { return enemyID; }
+
+    public void setEnemyName(string name_in)
+    {
+        enemyName = name_in;
+    }
+   
 }

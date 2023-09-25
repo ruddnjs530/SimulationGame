@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Enemy Data", menuName = "Scriptable Object/Enemy Data")]
-public class EnemyData : ScriptableObject
+//[CreateAssetMenu(fileName = "Enemy Data", menuName = "Scriptable Object/Enemy Data")]
+public class EnemyData : MonoBehaviour
 {
     [SerializeField]
     private string enemyName;
@@ -24,14 +24,14 @@ public class EnemyData : ScriptableObject
     private int enemyID;
     public void setEnemyID(int id_in) { enemyID = id_in; }
     public int getEnemyID { get { return enemyID; } }
-    public void setEnemyPosition(Vector3 position)
-    {
-        enemyPosition = position;
-    }
-    public float enemyAndBuildingDistance;
-    //public float getnEmyAndBuildingDistance { get { return enemyAndBuildingDistance; } }
-    public void setEmyAndBuildingDistance(float distance)
-    {
-        enemyAndBuildingDistance = distance;
-    }
+    //public void setEnemyPosition(Vector3 position)
+    //{
+    //    enemyPosition = position;
+    //}
+    //public float enemyAndBuildingDistance;
+    ////public float getnEmyAndBuildingDistance { get { return enemyAndBuildingDistance; } }
+    //public void setEmyAndBuildingDistance(float distance)
+    //{
+    //    enemyAndBuildingDistance = distance;
+    //}
 }

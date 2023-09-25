@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
 
 [System.Serializable]
 public class Wave
@@ -10,6 +11,13 @@ public class Wave
     public int numberOfEnemies; // 적의 수
     public GameObject[] typeOfEnemies; // 적의 종류
     public float spawnInterval; // 스폰 간격
+}
+public class EnemyState
+{
+    public string enemyName;
+    public int enemyHP;
+    public int enemyDamage;
+    public float enemySpeed;
 }
 
 public enum EnemyType { Nomal, Power, Speed }
@@ -30,9 +38,19 @@ public class WaveSpawner : MonoBehaviour
     //[SerializeField]
     //private GameObject enemy;
 
-    private int enemyCounts = 0;
-    private List<Enemy> sortList;
+    private EnemyState enemy1;
 
+    private int enemyCounts = 0;
+
+    private void Awake()
+    {
+        Save();
+    }
+
+    private void Start()
+    {
+        Load();
+    }
 
     // Update is called once per frame
     void Update()
@@ -45,10 +63,8 @@ public class WaveSpawner : MonoBehaviour
             currentWaveNumber++;
             canSpawn = true;
         }
-        //SortEnemyData();
         if (!canSpawn)
         {
-            //Debug.Log(sortList[0]);
             return;
         }
     }
@@ -61,11 +77,20 @@ public class WaveSpawner : MonoBehaviour
             Transform randomPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
             var newEnemy = Instantiate(randomEnemy, randomPoint.position, Quaternion.identity).GetComponent<Enemy>();
 
-            newEnemy.setEnemyID(enemyCounts); // 생성된 적의 id를 추가
+            newEnemy.enemyID = enemyCounts; // 생성된 적의 id를 추가
             enemyDatas[enemyCounts] = newEnemy;
 
-            Debug.Log("enemy ID " + newEnemy.getEnemyID());
-                      
+            if (newEnemy.name == enemy1.enemyName) // 생성한 오브젝트와 enemy1의 이름이 같으면 복사
+            {
+                newEnemy.enemyName = enemy1.enemyName;
+                newEnemy.enemyHP = enemy1.enemyHP;
+                newEnemy.enemyDamage = enemy1.enemyDamage;
+                newEnemy.enemySpeed = enemy1.enemySpeed;
+
+            }
+
+            //Debug.Log("enemy ID " + newEnemy.getEnemyID());
+
             if (enemyCounts < 3) enemyCounts++;
 
             currentWave.numberOfEnemies--;
@@ -73,21 +98,31 @@ public class WaveSpawner : MonoBehaviour
 
             if (currentWave.numberOfEnemies == 0)
             {
-                for (int i = 0; i < 3; i++)
-                {
-                    Debug.Log(enemyDatas[i]);
-                    Debug.Log(enemyDatas[i].getEnemyID());
-                }
+                //for (int i = 0; i < 3; i++)
+                //{
+                //    Debug.Log(enemyDatas[i]);
+                //    Debug.Log(enemyDatas[i].getEnemyID());
+                //}
                     canSpawn = false;
             }
         }
     }
+    void Save()
+    {
+        EnemyState nomalEnemy = new EnemyState();
+        nomalEnemy.enemyName = "NomalEnemyPrefab(Clone)"; // 이름이 똑같아야함.
+        nomalEnemy.enemyHP = 5;
+        nomalEnemy.enemyDamage = 5;
+        nomalEnemy.enemySpeed = 5.0f;
 
-    //void SortEnemyData()
-    //{
-    //    if (!canSpawn)
-    //    {
-    //        sortList = enemyDatas.OrderBy(x => x.enemyAndBuildingDistance).ToList();
-    //    }
-    //}
+        string json = JsonUtility.ToJson(nomalEnemy);
+        File.WriteAllText(Application.dataPath + "/EnemyData.json", json);
+    }
+
+    void Load()
+    {
+        string content = File.ReadAllText(Application.dataPath + "/EnemyData.json");
+
+        enemy1 = JsonUtility.FromJson<EnemyState>(content);
+    }
 }
